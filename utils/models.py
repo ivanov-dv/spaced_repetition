@@ -56,9 +56,9 @@ class UserRequest:
         return cls(uuid.uuid4(), user_id, text, 2.5, count_day, date_notice, dt, dt)
 
     @classmethod
-    def from_orm(cls, user_orm):
-        user_orm.__dict__.pop('_sa_instance_state')
-        return cls(**user_orm.__dict__)
+    def from_orm(cls, request_orm):
+        request_orm.__dict__.pop('_sa_instance_state')
+        return cls(**request_orm.__dict__)
 
     async def calculate_next_date_notice(self, ratio: float = None):
         if ratio:
