@@ -3,8 +3,8 @@ from sqlalchemy import select, update, delete
 from time import time
 
 from utils.db import AlchemySqlDb
-from utils.models import User, Session
-from utils.models_orm import UserOrm
+from utils.models import User, Session, UserRequest
+from utils.models_orm import UserOrm, UserRequestOrm
 
 
 class RepositoryDb:
@@ -55,6 +55,42 @@ class UserRepository(RepositoryDb):
             res = await session.execute(select(UserOrm).where(UserOrm.ban is True))
             for user_orm in res:
                 self.banned.add(user_orm.user_id)
+
+
+class RequestRepository(RepositoryDb):
+    async def add(self, request: UserRequest) -> UserRequest:
+        async with self.db.SessionLocal() as session:
+            session.add(request)
+            await session.commit()
+            return request
+
+    async def get(self, request_id: str) -> UserRequest | None:
+        async with self.db.SessionLocal() as session:
+            res = await session.execute(select(UserRequestOrm).where(UserRequestOrm.request_id == request_id))
+            request_orm = res.scalar_one_or_none()
+            return UserRequest.from_orm(request_orm) if request_orm else None
+
+    async def update(self, request: UserRequest) -> UserRequest:
+        async with self.db.SessionLocal() as session:
+            request.updated = datetime.utcnow()
+            await session.execute(
+                update(UserRequestOrm)
+                .values(
+                    text=request.text,
+                    count_day=request.count_day,
+                    date_notice=request.date_notice,
+                    created=request.created,
+                    updated=request.updated,
+                )
+                .where(UserRequestOrm.request_id == request.request_id)
+            )
+            await session.commit()
+            return request
+
+    async def delete(self, request_id: str) -> None:
+        async with self.db.SessionLocal() as session:
+            await session.execute(delete(UserRequestOrm).where(UserRequestOrm.request_id == request_id))
+            await session.commit()
 
 
 class SessionRepository:
