@@ -18,13 +18,13 @@ async def main_bot():
         my_requests.router,
         create_request.router
     )
-    await user_repo.db.prepare()
-    await user_repo.load_from_db()
     await dp.start_polling(telegram_bot)
     await telegram_bot.delete_webhook(drop_pending_updates=True)
 
 
 async def main():
+    await user_repo.db.prepare()
+    await user_repo.load_from_db()
     await asyncio.gather(
         main_bot(),
         monitoring.check()
