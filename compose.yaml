@@ -1,0 +1,9 @@
+services:
+  spaced_repetition:
+    container_name: spaced_repetition
+    env_file:
+      - .env
+    build:
+      context: .
+    network_mode: host
+    restart: always
