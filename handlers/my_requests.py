@@ -64,6 +64,12 @@ async def delete_request(message: types.Message, state: FSMContext):
 
 @router.callback_query(F.data == 'mr_delete_all')
 async def delete_all_requests(callback: types.CallbackQuery, state: FSMContext):
+    await callback.message.edit_text('⁉️ Вы уверены, что хотите удалить все напоминания?',
+                                     reply_markup=MyRequestKb.delete_all_confirm())
+
+
+@router.callback_query(F.data == 'mr_delete_all_confirm')
+async def delete_all_requests_confirm(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     user_requests = data['user_requests']
     flag = False

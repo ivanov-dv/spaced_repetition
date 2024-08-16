@@ -52,6 +52,8 @@ class MyRequestKb(KB):
         text='Удалить все', callback_data='mr_delete_all')
     b_back_to_my_requests = InlineKeyboardButton(
         text='В мои уведомления', callback_data='my_requests')
+    b_delete_all_confirm = InlineKeyboardButton(
+        text='Да, удалить все', callback_data='mr_delete_all_confirm')
 
     @classmethod
     def my_requests(cls):
@@ -68,3 +70,11 @@ class MyRequestKb(KB):
         builder.add(
             cls.b_back_to_my_requests)
         return builder.as_markup()
+
+    @classmethod
+    def delete_all_confirm(cls):
+        builder = InlineKeyboardBuilder()
+        builder.add(
+            cls.b_delete_all_confirm,
+            cls.b_back_to_my_requests)
+        return builder.adjust(1).as_markup()
