@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message, TelegramObject
 from typing import Callable, Dict, Any, Awaitable
 
 from utils.keyboards import KB
-from utils.models import Session, User
+from utils.models import Session
 from utils.repositories import UserRepository, SessionRepository
 
 
@@ -30,10 +30,8 @@ class SessionMiddleware(BaseMiddleware):
         else:
             user = await self.user_repo.get(event.from_user.id)
             if not user:
-                user_orm = User.create(event.from_user.id, event.from_user.first_name,
-                                       event.from_user.last_name, event.from_user.username)
-                await self.user_repo.add(user_orm)
-                user = User.from_orm(user_orm)
+                await event.answer('Пользователь не найден',
+                                   reply_markup=KB.back_to_main())
             await self.session_repo.add(user, Session.create())
         return True
 
@@ -48,7 +46,8 @@ class SessionMiddleware(BaseMiddleware):
             return await event.answer("Ваш аккаунт заблокирован. Обратитесь в поддержку.")
         if not await self.session_middleware(event):
             if isinstance(event, Message):
-                return await event.answer("Ваша сессия истекла, начните заново.")
+                return await event.answer("Ваша сессия истекла, начните заново.",
+                                          reply_markup=KB.back_to_main())
             if isinstance(event, CallbackQuery):
                 return await event.message.edit_text("Ваша сессия истекла, начните заново.",
                                                      reply_markup=KB.back_to_main())
