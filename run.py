@@ -13,13 +13,13 @@ async def main_bot():
     middleware = SessionMiddleware(user_repo, session_repo)
     create_request.router.message.outer_middleware(middleware)
     create_request.router.callback_query.outer_middleware(middleware)
-    # dp.message.outer_middleware(outer_middleware)
-    # dp.callback_query.outer_middleware(outer_middleware)
     dp.include_routers(
         main_handlers.main_router,
         my_requests.router,
         create_request.router
     )
+    await user_repo.db.prepare()
+    await user_repo.load_from_db()
     await dp.start_polling(telegram_bot)
     await telegram_bot.delete_webhook(drop_pending_updates=True)
 
