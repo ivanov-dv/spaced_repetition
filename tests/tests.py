@@ -1,6 +1,8 @@
+import pytest
+
 from datetime import datetime
 
-import pytest
+import utils.assist as assist
 
 from utils.models import User, UserRequest, Session
 from utils.repositories import SessionRepository
@@ -70,3 +72,12 @@ class TestSessionRepository:
         await self.session_repo.delete(1)
         await self.session_repo.delete(2)
         assert self.session_repo.sessions == {}
+
+
+class TestAssist:
+    @staticmethod
+    def test_validate_nums_requests():
+        assert assist.validate_nums_requests(' 3, 2, 1, 2, 3,  5   ') == [1, 2, 3, 5]
+        assert assist.validate_nums_requests('4') == [4]
+        assert assist.validate_nums_requests('1 2 3, 4') is False
+        assert assist.validate_nums_requests('1 2 3 a 4') is False
