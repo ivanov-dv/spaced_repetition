@@ -60,7 +60,8 @@ class UserRepository(RepositoryDb):
 class RequestRepository(RepositoryDb):
     async def add(self, request: UserRequest) -> UserRequest:
         async with self.db.SessionLocal() as session:
-            session.add(request)
+            request_orm = UserRequestOrm.from_model(request)
+            session.add(request_orm)
             await session.commit()
             return request
 

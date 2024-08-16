@@ -50,10 +50,10 @@ class UserRequest:
 
     @classmethod
     def create(cls, user_id, text: str, count_day: int):
-        dt = datetime.utcnow().date()
+        dt = datetime.utcnow()
         td = timedelta(count_day)
         date_notice = dt + td
-        return cls(uuid.uuid4(), user_id, text, 2.5, count_day, date_notice, dt, dt)
+        return cls(uuid.uuid4(), user_id, text, 2.5, count_day, date_notice.date(), dt, dt)
 
     @classmethod
     def from_orm(cls, request_orm):
@@ -65,6 +65,11 @@ class UserRequest:
             self.ratio = ratio
         self.count_day = round(self.ratio * self.count_day + 1, 2)
         self.date_notice = self.date_notice + timedelta(int(self.count_day))
+
+    def __str__(self):
+        return (f'Задача: {self.text}\n'
+                f'Уведомить: {self.date_notice.strftime("%d.%m.%Y")}\n'
+                f'Создана: {self.created.date().strftime("%d.%m.%Y")}\n')
 
 
 @dataclass
