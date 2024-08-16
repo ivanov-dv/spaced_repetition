@@ -18,9 +18,9 @@ async def show_my_requests(callback: types.CallbackQuery, state: FSMContext):
     await state.set_data({'user_requests': user_requests})
     if not user_requests:
         try:
-            await callback.message.edit_text('Не создано ни одной задачи.', reply_markup=KB.main())
+            await callback.message.edit_text('🔎 Не создано ни одной задачи 🔍', reply_markup=KB.main())
         except exceptions.TelegramBadRequest:
-            await callback.answer('Не создано ни одной задачи.')
+            await callback.answer('🔎 Не создано ни одной задачи 🔍')
     else:
         await callback.message.edit_text(assist.list_requests_to_text(user_requests),
                                          reply_markup=MyRequestKb.my_requests())
