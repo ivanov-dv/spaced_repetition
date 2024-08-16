@@ -49,11 +49,11 @@ class UserRequest:
     updated: datetime
 
     @classmethod
-    def create(cls, user_id, text: str, count_day: int):
+    def create(cls, user_id,  text: str, ratio, count_day: int):
         dt = datetime.utcnow()
         td = timedelta(count_day)
         date_notice = dt + td
-        return cls(uuid.uuid4(), user_id, text, 2.5, count_day, date_notice.date(), dt, dt)
+        return cls(uuid.uuid4(), user_id, text, ratio, count_day, date_notice.date(), dt, dt)
 
     @classmethod
     def from_orm(cls, request_orm):

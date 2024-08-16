@@ -41,7 +41,6 @@ class SessionMiddleware(BaseMiddleware):
             event: Message | CallbackQuery,
             data: Dict[str, Any]
     ) -> Any:
-
         if event.from_user.id in self.user_repo.banned:
             return await event.answer("Ваш аккаунт заблокирован. Обратитесь в поддержку.")
         if not await self.session_middleware(event):
