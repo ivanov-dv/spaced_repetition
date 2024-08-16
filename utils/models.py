@@ -67,9 +67,10 @@ class UserRequest:
         self.date_notice = self.date_notice + timedelta(int(self.count_day))
 
     def __str__(self):
-        return (f'Задача: {self.text}\n'
-                f'Уведомить: {self.date_notice.strftime("%d.%m.%Y")}\n'
-                f'Создана: {self.created.date().strftime("%d.%m.%Y")}\n')
+        return (f'📖 {self.text}\n'
+                f'⏰ Напомнить: {self.date_notice.strftime("%d.%m.%Y")}\n'
+                f'✖️ Коэффициент: {self.ratio}\n'
+                f'💾 Создана: {self.created.date().strftime("%d.%m.%Y")}\n')
 
 
 @dataclass

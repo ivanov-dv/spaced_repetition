@@ -36,7 +36,7 @@ def validate_count_day(message: str):
 
 
 def list_requests_to_text(requests: list) -> str:
-    text = 'Задачи:\n\n'
+    text = '📚 Повторения:\n\n'
     for i, request in enumerate(requests, start=1):
-        text += f'{i}.\n{request}\n'
+        text += f'{i}. {request}\n'
     return text
