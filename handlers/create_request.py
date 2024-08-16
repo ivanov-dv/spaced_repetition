@@ -23,7 +23,7 @@ async def create_request(callback: types.CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == 'cr_my_ratio')
 async def ask_my_ratio(callback: types.CallbackQuery):
-    await callback.message.edit_text('Введите коэффициент частоты повторений R от 1 до 5:',
+    await callback.message.edit_text('⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
                                      reply_markup=KB.back_to_main())
 
 
@@ -36,7 +36,7 @@ async def get_my_ratio(message: types.Message, state: FSMContext):
     if not ratio:
         try:
             await msg.edit_text(f'{texts.incorrect_value()}\n\n'
-                                'Введите коэффициент частоты повторений R от 1 до 5:',
+                                'В⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
                                 reply_markup=CreateRequestKb.back_to_main())
         except exceptions.TelegramBadRequest:
             try:

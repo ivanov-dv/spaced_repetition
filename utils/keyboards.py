@@ -7,11 +7,12 @@ class KB:
     b_create_notice = InlineKeyboardButton(text='Создать уведомление', callback_data='create_request')
     b_my_requests = InlineKeyboardButton(text='Мои уведомления', callback_data='my_requests')
     b_remove_notice = InlineKeyboardButton(text='Удалить', callback_data='remove_notice')
+    b_description = InlineKeyboardButton(text='Описание', callback_data='description')
 
     @classmethod
     def main(cls):
         builder = InlineKeyboardBuilder()
-        builder.add(cls.b_create_notice, cls.b_my_requests)
+        builder.add(cls.b_create_notice, cls.b_my_requests, cls.b_description)
         return builder.adjust(1).as_markup()
 
     @classmethod

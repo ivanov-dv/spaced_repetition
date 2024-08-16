@@ -31,8 +31,8 @@ async def ask_nums_for_delete_request(callback: types.CallbackQuery, state: FSMC
     data = await state.get_data()
     user_requests = data["user_requests"]
     msg = await callback.message.edit_text(f'{assist.list_requests_to_text(user_requests)}\n\n'
-                                           f'Введите номер или номера задач через запятую для удаления.\n'
-                                           f'Например "2" или "2,4,6".',
+                                           f'⌨️ Введите номер или номера задач через запятую для удаления.\n'
+                                           f'Например "2" или "2,4,6".\n\n👇 ⌨️',
                                            reply_markup=MyRequestKb.back_to_my_requests())
     await state.set_state(MyRequestsFSM.delete_requests)
     await state.set_data({'msg': msg, 'user_requests': user_requests})
