@@ -35,3 +35,8 @@ async def start_callback(callback: types.CallbackQuery, state: FSMContext):
             await user_repo.add(user)
         except Exception as e:
             await callback.message.edit_text(f'Ошибка start_callback: {e}', reply_markup=KB.main())
+
+
+@main_router.callback_query(F.data == 'remove_notice')
+async def remove_notice(callback: types.CallbackQuery):
+    await callback.message.delete()

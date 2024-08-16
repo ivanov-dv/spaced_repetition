@@ -71,6 +71,11 @@ class RequestRepository(RepositoryDb):
             request_orm = res.scalar_one_or_none()
             return UserRequest.from_orm(request_orm) if request_orm else None
 
+    async def get_all_requests(self) -> list[UserRequest]:
+        async with self.db.SessionLocal() as session:
+            res = await session.execute(select(UserRequestOrm))
+            return [UserRequest.from_orm(request_orm) for request_orm in res.scalars()]
+
     async def get_requests_for_user(self, user_id: int) -> list[UserRequest]:
         async with self.db.SessionLocal() as session:
             res = await session.execute(select(UserRequestOrm).where(UserRequestOrm.user_id == user_id))
