@@ -25,8 +25,8 @@ class SessionMiddleware(BaseMiddleware):
     async def session_middleware(self, event) -> bool:
         if await self.session_repo.get(event.from_user.id):
             if await self._check_timeout_session(event.from_user.id):
+                await self.session_repo.update(event.from_user.id)
                 return False
-            await self.session_repo.update(event.from_user.id)
         else:
             user = await self.user_repo.get(event.from_user.id)
             if not user:
