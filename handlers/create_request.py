@@ -13,14 +13,6 @@ router.message.middleware(middleware)
 router.callback_query.middleware(middleware)
 
 
-@router.callback_query(F.data == 'create_request')
-async def create_request(callback: types.CallbackQuery, state: FSMContext):
-    await state.clear()
-    await state.set_state(CreateRequestFSM.get_ratio)
-    msg = await callback.message.edit_text(texts.ask_ratio(), reply_markup=CreateRequestKb.choose_ratio())
-    await state.update_data({'msg': msg})
-
-
 @router.callback_query(F.data == 'cr_my_ratio')
 async def ask_my_ratio(callback: types.CallbackQuery):
     await callback.message.edit_text('⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',

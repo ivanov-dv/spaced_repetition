@@ -2,9 +2,10 @@ from aiogram import Router, types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-from engine import user_repo
+from engine import user_repo, session_repo
 from utils import texts
-from utils.keyboards import KB
+from utils.fsm_states import CreateRequestFSM
+from utils.keyboards import KB, CreateRequestKb
 from utils.models import User
 
 main_router = Router()
@@ -46,6 +47,18 @@ async def start_callback(callback: types.CallbackQuery, state: FSMContext):
 async def description(callback: types.CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.message.edit_text(texts.main(), reply_markup=KB.back_to_main())
+
+
+@main_router.callback_query(F.data == 'create_request')
+async def create_request(callback: types.CallbackQuery, state: FSMContext):
+    session = await session_repo.get(callback.from_user.id)
+    if not session:
+        user = await user_repo.get(callback.from_user.id)
+        await session_repo.add(user)
+    await state.clear()
+    await state.set_state(CreateRequestFSM.get_ratio)
+    msg = await callback.message.edit_text(texts.ask_ratio(), reply_markup=CreateRequestKb.choose_ratio())
+    await state.update_data({'msg': msg})
 
 
 @main_router.callback_query(F.data == 'remove_notice')
