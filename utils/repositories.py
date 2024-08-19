@@ -107,7 +107,8 @@ class RequestRepository(RepositoryDb):
 class SessionRepository:
     sessions: dict[User, Session] = {}
 
-    async def add(self, user: User, session: Session) -> Session:
+    async def add(self, user: User) -> Session:
+        session = Session.create()
         self.sessions.update({user: session})
         return session
 

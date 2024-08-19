@@ -7,7 +7,6 @@ from aiogram.types import CallbackQuery, Message, TelegramObject
 from typing import Callable, Dict, Any, Awaitable
 
 from utils.keyboards import KB
-from utils.models import Session
 from utils.repositories import UserRepository, SessionRepository
 
 
@@ -32,7 +31,7 @@ class SessionMiddleware(BaseMiddleware):
             if not user:
                 await event.answer('Пользователь не найден',
                                    reply_markup=KB.back_to_main())
-            await self.session_repo.add(user, Session.create())
+            await self.session_repo.add(user)
         return True
 
     async def __call__(

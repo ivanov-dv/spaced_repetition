@@ -11,9 +11,9 @@ from utils.repositories import SessionRepository
 class TestRequest:
     dt = datetime(2000, 5, 20)
 
-    ur1 = UserRequest.create('test', 1, 0)
+    ur1 = UserRequest.create(1, 'test', 1, 0)
     ur1.date_notice = dt
-    ur2 = UserRequest.create('test', 2, 5)
+    ur2 = UserRequest.create(1, 'test', 2, 5)
     ur2.date_notice = dt
 
     @pytest.mark.asyncio
@@ -50,22 +50,21 @@ class TestSessionRepository:
 
     @pytest.mark.asyncio
     async def test_add_session(self):
-        await self.session_repo.add(self.user1, self.session1)
-        await self.session_repo.add(self.user2, self.session2)
+        await self.session_repo.add(self.user1)
+        await self.session_repo.add(self.user2)
         assert len(self.session_repo.sessions) == 2
 
     @pytest.mark.asyncio
     async def test_get_session(self):
         session = await self.session_repo.get(1)
-        assert session == self.session1
+        assert isinstance(session, Session)
 
     @pytest.mark.asyncio
     async def test_update_session(self):
-        session_old = self.session1.updated
         session = await self.session_repo.get(1)
-        assert session.updated == self.session1.updated
+        session_update = session.updated
         session = await self.session_repo.update(1)
-        assert session.updated != session_old
+        assert session.updated != session_update
 
     @pytest.mark.asyncio
     async def test_delete_session(self):
