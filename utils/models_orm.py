@@ -14,9 +14,9 @@ class UserOrm(Base):
     __tablename__ = "users"
 
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    firstname: Mapped[str] = mapped_column()
-    lastname: Mapped[str] = mapped_column()
-    username: Mapped[str] = mapped_column()
+    firstname: Mapped[str] = mapped_column(nullable=True)
+    lastname: Mapped[str] = mapped_column(nullable=True)
+    username: Mapped[str] = mapped_column(nullable=True)
     ban: Mapped[bool] = mapped_column(default=False)
     created: Mapped[datetime] = mapped_column()
     updated: Mapped[datetime] = mapped_column()
