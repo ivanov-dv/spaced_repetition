@@ -67,10 +67,20 @@ async def get_text(message: types.Message, state: FSMContext):
                             f'{texts.get_text()}',
                             reply_markup=KB.back_to_main())
     else:
-        await msg.edit_text(texts.get_count_day(ratio),
-                            reply_markup=KB.back_to_main())
-        await state.update_data({'text': text, 'msg': msg})
-        await state.set_state(CreateRequestFSM.get_count_day)
+        if data['ratio'] == 2 or data['ratio'] == 2.5:
+            request = UserRequest.create(message.from_user.id, text, ratio, 1)
+            try:
+                await request_repo.add(request)
+            except Exception as e:
+                await msg.edit_text(f'Ошибка создания запроса в БД: {str(e)}', reply_markup=KB.back_to_main())
+            await msg.edit_text('✅ Задача успешно создана!\n\n'
+                                f'{request}',
+                                reply_markup=KB.main())
+        else:
+            await msg.edit_text(texts.get_count_day(ratio),
+                                reply_markup=KB.back_to_main())
+            await state.update_data({'text': text, 'msg': msg})
+            await state.set_state(CreateRequestFSM.get_count_day)
 
 
 @router.message(CreateRequestFSM.get_count_day)
