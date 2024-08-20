@@ -32,7 +32,8 @@ class Monitoring:
                                 f'Следующее напоминание: {request.date_notice.strftime("%d.%m.%Y")}',
                                 reply_markup=KB.remove_notice())
                         except Exception as e:
-                            logging.error(f'Ошибка отправки уведомления: {str(e)}')
+                            print(f'Ошибка отправки уведомления для пользователя {request.user_id}: {str(e)}')
+                            logging.error(f'Ошибка отправки уведомления для пользователя {request.user_id}: {str(e)}')
                             continue
                         else:
                             await self.request_repo.update(request)
