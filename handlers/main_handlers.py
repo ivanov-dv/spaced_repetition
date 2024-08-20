@@ -25,6 +25,9 @@ async def start(message: types.Message, state: FSMContext):
             await user_repo.add(user)
         except Exception as e:
             await message.answer(f'Ошибка start: {e}', reply_markup=KB.main())
+        await message.answer(f'🔆 Привет, {message.from_user.first_name}!\n\n'
+                             f'👀 Давай посмотрим, что тут у нас...',
+                             reply_markup=KB.main())
 
 
 @main_router.callback_query(F.data == 'start')
@@ -41,6 +44,9 @@ async def start_callback(callback: types.CallbackQuery, state: FSMContext):
             await user_repo.add(user)
         except Exception as e:
             await callback.message.edit_text(f'Ошибка start_callback: {e}', reply_markup=KB.main())
+        await callback.message.edit_text(f'🔆 Привет, {callback.from_user.first_name}!\n\n'
+                                         f'👀 Давай посмотрим, что тут у нас...',
+                                         reply_markup=KB.main())
 
 
 @main_router.callback_query(F.data == 'description')
