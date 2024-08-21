@@ -12,7 +12,8 @@ async def main_bot():
     dp.include_routers(
         main_handlers.main_router,
         my_requests.router,
-        create_request.router
+        create_request.router,
+        create_request.check_session
     )
     await dp.start_polling(telegram_bot)
     await telegram_bot.delete_webhook(drop_pending_updates=True)
