@@ -1,7 +1,10 @@
+import time
+
 from aiogram import Router, types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
+import config
 from engine import user_repo, session_repo
 from utils import texts
 from utils.fsm_states import CreateRequestFSM
@@ -57,8 +60,7 @@ async def description(callback: types.CallbackQuery, state: FSMContext):
 
 @main_router.callback_query(F.data == 'create_request')
 async def create_request(callback: types.CallbackQuery, state: FSMContext):
-    session = await session_repo.get(callback.from_user.id)
-    if not session:
+    if not await session_repo.check(callback.from_user.id):
         user = await user_repo.get(callback.from_user.id)
         await session_repo.add(user)
     await state.clear()

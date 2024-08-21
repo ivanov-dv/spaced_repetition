@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy import select, update, delete
 from time import time
 
+import config
 from utils.db import AlchemySqlDb
 from utils.models import User, Session, UserRequest
 from utils.models_orm import UserOrm, UserRequestOrm
@@ -125,3 +126,7 @@ class SessionRepository:
 
     async def delete(self, user_id: int) -> None:
         self.sessions.pop(user_id, None)
+
+    async def check(self, user_id: int) -> bool:
+        session = await self.get(user_id)
+        return True if session is not None and time() - session.updated < config.MAX_SESSION_TIME_SECS else False
