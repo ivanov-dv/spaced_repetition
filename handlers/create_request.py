@@ -14,6 +14,17 @@ check_session.message.middleware(middleware)
 check_session.callback_query.middleware(middleware)
 
 
+@router.callback_query(F.data == 'create_request')
+async def create_request(callback: types.CallbackQuery, state: FSMContext):
+    if not await session_repo.check(callback.from_user.id):
+        user = await user_repo.get(callback.from_user.id)
+        await session_repo.add(user)
+    await state.clear()
+    await state.set_state(CreateRequestFSM.get_ratio)
+    msg = await callback.message.edit_text(texts.ask_ratio(), reply_markup=CreateRequestKb.choose_ratio())
+    await state.update_data({'msg': msg})
+
+
 @router.callback_query(F.data == 'cr_my_ratio')
 async def ask_my_ratio(callback: types.CallbackQuery):
     if not await session_repo.check(callback.from_user.id):
