@@ -8,9 +8,10 @@ from utils.keyboards import KB, CreateRequestKb
 from utils.models import UserRequest
 
 router = Router()
+check_session = Router()
 
-router.message.middleware(middleware)
-router.callback_query.middleware(middleware)
+check_session.message.middleware(middleware)
+check_session.callback_query.middleware(middleware)
 
 
 @router.callback_query(F.data == 'cr_my_ratio')
@@ -67,7 +68,7 @@ async def choose_ratio_2(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(CreateRequestFSM.get_text)
 
 
-@router.message(CreateRequestFSM.get_text)
+@check_session.message(CreateRequestFSM.get_text)
 async def get_text(message: types.Message, state: FSMContext):
     await message.delete()
     data = await state.get_data()
@@ -95,7 +96,7 @@ async def get_text(message: types.Message, state: FSMContext):
             await state.set_state(CreateRequestFSM.get_count_day)
 
 
-@router.message(CreateRequestFSM.get_count_day)
+@check_session.message(CreateRequestFSM.get_count_day)
 async def get_count_day(message: types.Message, state: FSMContext):
     await message.delete()
     data = await state.get_data()
