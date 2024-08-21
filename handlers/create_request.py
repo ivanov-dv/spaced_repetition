@@ -25,17 +25,14 @@ async def create_request(callback: types.CallbackQuery, state: FSMContext):
     await state.update_data({'msg': msg})
 
 
-@check_session.callback_query(F.data == 'cr_my_ratio')
+@router.callback_query(F.data == 'cr_my_ratio')
 async def ask_my_ratio(callback: types.CallbackQuery):
     await callback.message.edit_text('⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
                                      reply_markup=KB.back_to_main())
 
 
-@router.message(CreateRequestFSM.get_ratio)
+@check_session.message(CreateRequestFSM.get_ratio)
 async def get_my_ratio(message: types.Message, state: FSMContext):
-    if not await session_repo.check(message.from_user.id):
-        user = await user_repo.get(message.from_user.id)
-        await session_repo.add(user)
     await message.delete()
     data = await state.get_data()
     ratio = assist.validate_my_ratio(message.text)
