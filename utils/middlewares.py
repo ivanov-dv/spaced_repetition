@@ -44,6 +44,8 @@ class SessionMiddleware(BaseMiddleware):
             return await event.answer("Ваш аккаунт заблокирован. Обратитесь в поддержку.")
         if not await self.session_middleware(event):
             if isinstance(event, Message):
+                print(data)
+                await event.delete()
                 return await event.answer("Ваша сессия истекла, начните заново.",
                                           reply_markup=KB.back_to_main())
             if isinstance(event, CallbackQuery):
