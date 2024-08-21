@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from time import time
 
 
-
 @dataclass
 class User:
     user_id: int
