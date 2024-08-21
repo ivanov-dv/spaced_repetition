@@ -24,7 +24,6 @@ class SessionMiddleware(BaseMiddleware):
     async def session_middleware(self, event) -> bool:
         if await self.session_repo.get(event.from_user.id):
             if await self._check_timeout_session(event.from_user.id):
-                await self.session_repo.update(event.from_user.id)
                 return False
         else:
             user = await self.user_repo.get(event.from_user.id)
@@ -38,14 +37,15 @@ class SessionMiddleware(BaseMiddleware):
             self,
             handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
             event: Message | CallbackQuery,
-            data: Dict[str, Any]
+            data: Dict[str, Any],
     ) -> Any:
         if event.from_user.id in self.user_repo.banned:
             return await event.answer("Ваш аккаунт заблокирован. Обратитесь в поддержку.")
         if not await self.session_middleware(event):
             if isinstance(event, Message):
+                await event.delete()
                 return await event.answer("Ваша сессия истекла, начните заново.",
-                                          reply_markup=KB.back_to_main())
+                                          reply_markup=KB.remove_notice())
             if isinstance(event, CallbackQuery):
                 return await event.message.edit_text("Ваша сессия истекла, начните заново.",
                                                      reply_markup=KB.back_to_main())

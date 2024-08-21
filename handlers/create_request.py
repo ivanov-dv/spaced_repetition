@@ -1,16 +1,28 @@
 from aiogram import types, F, Router, exceptions
 from aiogram.fsm.context import FSMContext
 
-from engine import middleware, request_repo
+from engine import middleware, request_repo, session_repo, user_repo
 from utils import texts, assist
 from utils.fsm_states import CreateRequestFSM
 from utils.keyboards import KB, CreateRequestKb
 from utils.models import UserRequest
 
 router = Router()
+check_session = Router()
 
-router.message.middleware(middleware)
-router.callback_query.middleware(middleware)
+check_session.message.middleware(middleware)
+check_session.callback_query.middleware(middleware)
+
+
+@router.callback_query(F.data == 'create_request')
+async def create_request(callback: types.CallbackQuery, state: FSMContext):
+    if not await session_repo.check(callback.from_user.id):
+        user = await user_repo.get(callback.from_user.id)
+        await session_repo.add(user)
+    await state.clear()
+    await state.set_state(CreateRequestFSM.get_ratio)
+    msg = await callback.message.edit_text(texts.ask_ratio(), reply_markup=CreateRequestKb.choose_ratio())
+    await state.update_data({'msg': msg})
 
 
 @router.callback_query(F.data == 'cr_my_ratio')
@@ -19,7 +31,7 @@ async def ask_my_ratio(callback: types.CallbackQuery):
                                      reply_markup=KB.back_to_main())
 
 
-@router.message(CreateRequestFSM.get_ratio)
+@check_session.message(CreateRequestFSM.get_ratio)
 async def get_my_ratio(message: types.Message, state: FSMContext):
     await message.delete()
     data = await state.get_data()
@@ -43,6 +55,9 @@ async def get_my_ratio(message: types.Message, state: FSMContext):
 
 @router.callback_query(F.data == 'cr_ratio_2_5')
 async def choose_ratio_2_5(callback: types.CallbackQuery, state: FSMContext):
+    if not await session_repo.check(callback.from_user.id):
+        user = await user_repo.get(callback.from_user.id)
+        await session_repo.add(user)
     msg = await callback.message.edit_text(texts.get_text(), reply_markup=KB.back_to_main())
     await state.update_data({'ratio': 2.5, 'msg': msg})
     await state.set_state(CreateRequestFSM.get_text)
@@ -50,12 +65,15 @@ async def choose_ratio_2_5(callback: types.CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == 'cr_ratio_2')
 async def choose_ratio_2(callback: types.CallbackQuery, state: FSMContext):
+    if not await session_repo.check(callback.from_user.id):
+        user = await user_repo.get(callback.from_user.id)
+        await session_repo.add(user)
     msg = await callback.message.edit_text(texts.get_text(), reply_markup=KB.back_to_main())
     await state.update_data({'ratio': 2, 'msg': msg})
     await state.set_state(CreateRequestFSM.get_text)
 
 
-@router.message(CreateRequestFSM.get_text)
+@check_session.message(CreateRequestFSM.get_text)
 async def get_text(message: types.Message, state: FSMContext):
     await message.delete()
     data = await state.get_data()
@@ -83,7 +101,7 @@ async def get_text(message: types.Message, state: FSMContext):
             await state.set_state(CreateRequestFSM.get_count_day)
 
 
-@router.message(CreateRequestFSM.get_count_day)
+@check_session.message(CreateRequestFSM.get_count_day)
 async def get_count_day(message: types.Message, state: FSMContext):
     await message.delete()
     data = await state.get_data()
