@@ -15,6 +15,9 @@ router.callback_query.middleware(middleware)
 
 @router.callback_query(F.data == 'cr_my_ratio')
 async def ask_my_ratio(callback: types.CallbackQuery):
+    if not await session_repo.check(callback.from_user.id):
+        user = await user_repo.get(callback.from_user.id)
+        await session_repo.add(user)
     await callback.message.edit_text('⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
                                      reply_markup=KB.back_to_main())
 
