@@ -21,14 +21,19 @@ async def create_request(callback: types.CallbackQuery, state: FSMContext):
         await session_repo.add(user)
     await state.clear()
     await state.set_state(CreateRequestFSM.get_ratio)
-    msg = await callback.message.edit_text(texts.ask_ratio(), reply_markup=CreateRequestKb.choose_ratio())
+    msg = await callback.message.edit_text(
+        texts.ask_ratio(),
+        reply_markup=CreateRequestKb.choose_ratio()
+    )
     await state.update_data({'msg': msg})
 
 
 @router.callback_query(F.data == 'cr_my_ratio')
 async def ask_my_ratio(callback: types.CallbackQuery):
-    await callback.message.edit_text('⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
-                                     reply_markup=KB.back_to_main())
+    await callback.message.edit_text(
+        '⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
+        reply_markup=KB.back_to_main()
+    )
 
 
 @check_session.message(CreateRequestFSM.get_ratio)
@@ -39,16 +44,21 @@ async def get_my_ratio(message: types.Message, state: FSMContext):
     msg = data['msg']
     if not ratio:
         try:
-            await msg.edit_text(f'{texts.incorrect_value()}\n\n'
-                                'В⌨️ Введите коэффициент частоты повторений R от 1 до 5:\n\n👇 ⌨️',
-                                reply_markup=CreateRequestKb.back_to_main())
+            await msg.edit_text(
+                f'{texts.incorrect_value()}\n\n'
+                'В⌨️ Введите коэффициент частоты '
+                'повторений R от 1 до 5:\n\n👇 ⌨️',
+                reply_markup=CreateRequestKb.back_to_main())
         except exceptions.TelegramBadRequest:
             try:
                 await msg.answer()
             except TypeError:
                 pass
     else:
-        msg = await data['msg'].edit_text(texts.get_text(), reply_markup=KB.back_to_main())
+        msg = await data['msg'].edit_text(
+            texts.get_text(),
+            reply_markup=KB.back_to_main()
+        )
         await state.update_data({'ratio': ratio, 'msg': msg})
         await state.set_state(CreateRequestFSM.get_text)
 
@@ -58,7 +68,10 @@ async def choose_ratio_2_5(callback: types.CallbackQuery, state: FSMContext):
     if not await session_repo.check(callback.from_user.id):
         user = await user_repo.get(callback.from_user.id)
         await session_repo.add(user)
-    msg = await callback.message.edit_text(texts.get_text(), reply_markup=KB.back_to_main())
+    msg = await callback.message.edit_text(
+        texts.get_text(),
+        reply_markup=KB.back_to_main()
+    )
     await state.update_data({'ratio': 2.5, 'msg': msg})
     await state.set_state(CreateRequestFSM.get_text)
 
@@ -68,7 +81,10 @@ async def choose_ratio_2(callback: types.CallbackQuery, state: FSMContext):
     if not await session_repo.check(callback.from_user.id):
         user = await user_repo.get(callback.from_user.id)
         await session_repo.add(user)
-    msg = await callback.message.edit_text(texts.get_text(), reply_markup=KB.back_to_main())
+    msg = await callback.message.edit_text(
+        texts.get_text(),
+        reply_markup=KB.back_to_main()
+    )
     await state.update_data({'ratio': 2, 'msg': msg})
     await state.set_state(CreateRequestFSM.get_text)
 
@@ -90,7 +106,10 @@ async def get_text(message: types.Message, state: FSMContext):
             try:
                 await request_repo.add(request)
             except Exception as e:
-                await msg.edit_text(f'Ошибка создания запроса в БД: {str(e)}', reply_markup=KB.back_to_main())
+                await msg.edit_text(
+                    f'Ошибка создания запроса в БД: {str(e)}',
+                    reply_markup=KB.back_to_main()
+                )
             await msg.edit_text('✅ Задача успешно создана!\n\n'
                                 f'{request}',
                                 reply_markup=KB.main())
@@ -114,11 +133,20 @@ async def get_count_day(message: types.Message, state: FSMContext):
                             f'{texts.get_count_day(ratio)}',
                             reply_markup=KB.back_to_main())
     else:
-        request = UserRequest.create(message.from_user.id, text, ratio, count_day)
+        request = UserRequest.create(
+            message.from_user.id,
+            text,
+            ratio,
+            count_day
+        )
         try:
             await request_repo.add(request)
         except Exception as e:
-            await msg.edit_text(f'Ошибка создания запроса в БД: {str(e)}', reply_markup=KB.back_to_main())
-        await msg.edit_text('✅ Задача успешно создана!\n\n'
-                            f'{request}',
-                            reply_markup=KB.main())
+            await msg.edit_text(
+                f'Ошибка создания запроса в БД: {str(e)}',
+                reply_markup=KB.back_to_main()
+            )
+        await msg.edit_text(
+            '✅ Задача успешно создана!\n\n{request}',
+            reply_markup=KB.main()
+        )

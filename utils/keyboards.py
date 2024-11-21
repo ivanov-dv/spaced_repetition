@@ -3,11 +3,26 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 class KB:
-    b_back_to_main = InlineKeyboardButton(text='На главную', callback_data='start')
-    b_create_notice = InlineKeyboardButton(text='Создать уведомление', callback_data='create_request')
-    b_my_requests = InlineKeyboardButton(text='Мои уведомления', callback_data='my_requests')
-    b_remove_notice = InlineKeyboardButton(text='Удалить сообщение', callback_data='remove_notice')
-    b_description = InlineKeyboardButton(text='Описание', callback_data='description')
+    b_back_to_main = InlineKeyboardButton(
+        text='На главную',
+        callback_data='start'
+    )
+    b_create_notice = InlineKeyboardButton(
+        text='Создать уведомление',
+        callback_data='create_request'
+    )
+    b_my_requests = InlineKeyboardButton(
+        text='Мои уведомления',
+        callback_data='my_requests'
+    )
+    b_remove_notice = InlineKeyboardButton(
+        text='Удалить сообщение',
+        callback_data='remove_notice'
+    )
+    b_description = InlineKeyboardButton(
+        text='Описание',
+        callback_data='description'
+    )
 
     @classmethod
     def main(cls):

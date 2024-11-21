@@ -12,7 +12,11 @@ from utils.repositories import UserRepository, SessionRepository
 
 class SessionMiddleware(BaseMiddleware):
 
-    def __init__(self, user_repo: UserRepository, session_repo: SessionRepository):
+    def __init__(
+            self,
+            user_repo: UserRepository,
+            session_repo: SessionRepository
+    ):
         self.user_repo = user_repo
         self.session_repo = session_repo
 
@@ -34,19 +38,25 @@ class SessionMiddleware(BaseMiddleware):
         return True
 
     async def __call__(
-            self,
-            handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
-            event: Message | CallbackQuery,
-            data: Dict[str, Any],
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: Message | CallbackQuery,
+        data: Dict[str, Any],
     ) -> Any:
         if event.from_user.id in self.user_repo.banned:
-            return await event.answer("Ваш аккаунт заблокирован. Обратитесь в поддержку.")
+            return await event.answer(
+                'Ваш аккаунт заблокирован. Обратитесь в поддержку.'
+            )
         if not await self.session_middleware(event):
             if isinstance(event, Message):
                 await event.delete()
-                return await event.answer("Ваша сессия истекла, начните заново.",
-                                          reply_markup=KB.remove_notice())
+                return await event.answer(
+                    'Ваша сессия истекла, начните заново.',
+                    reply_markup=KB.remove_notice()
+                )
             if isinstance(event, CallbackQuery):
-                return await event.message.edit_text("Ваша сессия истекла, начните заново.",
-                                                     reply_markup=KB.back_to_main())
+                return await event.message.edit_text(
+                    'Ваша сессия истекла, начните заново.',
+                    reply_markup=KB.back_to_main()
+                )
         return await handler(event, data)

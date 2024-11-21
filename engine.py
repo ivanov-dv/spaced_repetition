@@ -28,7 +28,10 @@ session_repo = SessionRepository()
 '''
 Telegram API
 '''
-telegram_bot = Bot(token=config.TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=config.TELEGRAM_PARSE_MODE))
+telegram_bot = Bot(
+    token=config.TELEGRAM_BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=config.TELEGRAM_PARSE_MODE)
+)
 logging.basicConfig(level=config.LOG_LEVEL, stream=sys.stdout)
 middleware = SessionMiddleware(user_repo, session_repo)
 

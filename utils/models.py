@@ -15,7 +15,13 @@ class User:
     updated: datetime
 
     @classmethod
-    def create(cls, user_id: int, firstname: str, lastname: str, username: str):
+    def create(
+            cls,
+            user_id: int,
+            firstname: str,
+            lastname: str,
+            username: str
+    ):
         dt = datetime.utcnow()
         return cls(user_id, firstname, lastname, username, False, dt, dt)
 
@@ -52,7 +58,16 @@ class UserRequest:
         dt = datetime.utcnow()
         td = timedelta(count_day)
         date_notice = dt + td
-        return cls(uuid.uuid4(), user_id, text, ratio, count_day, date_notice.date(), dt, dt)
+        return cls(
+            uuid.uuid4(),
+            user_id,
+            text,
+            ratio,
+            count_day,
+            date_notice.date(),
+            dt,
+            dt
+        )
 
     @classmethod
     def from_orm(cls, request_orm):
@@ -66,10 +81,12 @@ class UserRequest:
         self.date_notice = self.date_notice + timedelta(int(self.count_day))
 
     def __str__(self):
-        return (f'📖 {self.text}\n'
-                f'⏰ Напомнить: {self.date_notice.strftime("%d.%m.%Y")}\n'
-                f'✖️ Коэффициент: {self.ratio}\n'
-                f'💾 Создана: {self.created.date().strftime("%d.%m.%Y")}\n')
+        return (
+            f'📖 {self.text}\n'
+            f'⏰ Напомнить: {self.date_notice.strftime("%d.%m.%Y")}\n'
+            f'✖️ Коэффициент: {self.ratio}\n'
+            f'💾 Создана: {self.created.date().strftime("%d.%m.%Y")}\n'
+        )
 
 
 @dataclass

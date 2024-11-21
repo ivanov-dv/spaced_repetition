@@ -25,7 +25,9 @@ class UserRepository(RepositoryDb):
 
     async def get(self, user_id: int) -> User | None:
         async with self.db.SessionLocal() as session:
-            res = await session.execute(select(UserOrm).where(UserOrm.user_id == user_id))
+            res = await session.execute(
+                select(UserOrm).where(UserOrm.user_id == user_id)
+            )
             user_orm = res.scalar_one_or_none()
             return User.from_orm(user_orm) if user_orm else None
 
@@ -48,12 +50,16 @@ class UserRepository(RepositoryDb):
 
     async def delete(self, user_id: int) -> None:
         async with self.db.SessionLocal() as session:
-            await session.execute(delete(UserOrm).where(UserOrm.user_id == user_id))
+            await session.execute(
+                delete(UserOrm).where(UserOrm.user_id == user_id)
+            )
             await session.commit()
 
     async def load_from_db(self):
         async with self.db.SessionLocal() as session:
-            res = await session.execute(select(UserOrm).where(UserOrm.ban is True))
+            res = await session.execute(
+                select(UserOrm).where(UserOrm.ban is True)
+            )
             for user_orm in res:
                 self.banned.add(user_orm.user_id)
 
@@ -68,19 +74,33 @@ class RequestRepository(RepositoryDb):
 
     async def get(self, request_id: str) -> UserRequest | None:
         async with self.db.SessionLocal() as session:
-            res = await session.execute(select(UserRequestOrm).where(UserRequestOrm.request_id == request_id))
+            res = await session.execute(
+                select(UserRequestOrm).where(
+                    UserRequestOrm.request_id == request_id
+                )
+            )
             request_orm = res.scalar_one_or_none()
             return UserRequest.from_orm(request_orm) if request_orm else None
 
     async def get_all_requests(self) -> list[UserRequest]:
         async with self.db.SessionLocal() as session:
             res = await session.execute(select(UserRequestOrm))
-            return [UserRequest.from_orm(request_orm) for request_orm in res.scalars()]
+            return [
+                UserRequest.from_orm(request_orm)
+                for request_orm in res.scalars()
+            ]
 
     async def get_requests_for_user(self, user_id: int) -> list[UserRequest]:
         async with self.db.SessionLocal() as session:
-            res = await session.execute(select(UserRequestOrm).where(UserRequestOrm.user_id == user_id))
-            return [UserRequest.from_orm(request_orm) for request_orm in res.scalars()]
+            res = await session.execute(
+                select(UserRequestOrm).where(
+                    UserRequestOrm.user_id == user_id
+                )
+            )
+            return [
+                UserRequest.from_orm(request_orm)
+                for request_orm in res.scalars()
+            ]
 
     async def update(self, request: UserRequest) -> UserRequest:
         async with self.db.SessionLocal() as session:
@@ -101,7 +121,11 @@ class RequestRepository(RepositoryDb):
 
     async def delete(self, request_id: str) -> None:
         async with self.db.SessionLocal() as session:
-            await session.execute(delete(UserRequestOrm).where(UserRequestOrm.request_id == request_id))
+            await session.execute(
+                delete(UserRequestOrm).where(
+                    UserRequestOrm.request_id == request_id
+                )
+            )
             await session.commit()
 
 
@@ -129,4 +153,9 @@ class SessionRepository:
 
     async def check(self, user_id: int) -> bool:
         session = await self.get(user_id)
-        return True if session is not None and time() - session.updated < config.MAX_SESSION_TIME_SECS else False
+        return (
+            True
+            if session is not None
+               and time() - session.updated < config.MAX_SESSION_TIME_SECS
+            else False
+        )

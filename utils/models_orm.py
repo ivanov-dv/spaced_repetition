@@ -11,7 +11,7 @@ class Base(DeclarativeBase):
 
 
 class UserOrm(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     firstname: Mapped[str] = mapped_column(nullable=True)
@@ -20,7 +20,9 @@ class UserOrm(Base):
     ban: Mapped[bool] = mapped_column(default=False)
     created: Mapped[datetime] = mapped_column()
     updated: Mapped[datetime] = mapped_column()
-    requests: Mapped["UserRequestOrm"] = relationship(cascade="all, delete-orphan")
+    requests: Mapped['UserRequestOrm'] = relationship(
+        cascade='all, delete-orphan'
+    )
 
     @classmethod
     def from_model(cls, user: User):
@@ -36,10 +38,13 @@ class UserOrm(Base):
 
 
 class UserRequestOrm(Base):
-    __tablename__ = "user_requests"
+    __tablename__ = 'user_requests'
 
     request_id: Mapped[UUID] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.user_id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey('users.user_id', ondelete='CASCADE')
+    )
     text: Mapped[str] = mapped_column()
     ratio: Mapped[float] = mapped_column()
     count_day: Mapped[float] = mapped_column()
