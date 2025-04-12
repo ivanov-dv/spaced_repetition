@@ -46,5 +46,5 @@ class Monitoring:
             print('Цикл: ', self.count)
             user_requests = await self.request_repo.get_all_requests()
             for request in user_requests:
-                self._check_request(request)
+                await self._check_request(request)
             await asyncio.sleep(60*60*6)
