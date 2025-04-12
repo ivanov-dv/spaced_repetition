@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: spaced-repetition
+  name: spaced-repetition
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spaced-repetition
+  template:
+    metadata:
+      labels:
+        app: spaced-repetition
+    spec:
+      containers:
+        - name: spaced-repetition
+          image: spaced-repetition:latest
+          imagePullPolicy: Never
+          envFrom:
+            - secretRef:
+                name: spaced-repetition-env
