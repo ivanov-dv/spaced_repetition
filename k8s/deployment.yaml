@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: spaced-repetition
-          image: spaced-repetition:latest
-          imagePullPolicy: Never
+          image: ivanovdv/spaced-repetition:latest
+          imagePullPolicy: Always
           envFrom:
             - secretRef:
                 name: spaced-repetition-env
