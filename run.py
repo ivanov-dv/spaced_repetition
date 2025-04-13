@@ -1,8 +1,10 @@
 import asyncio
 
+import sentry_sdk
 from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from config import SENTRY_DSN
 from engine import telegram_bot, user_repo, monitoring
 from handlers import main_handlers, my_requests, create_request
 
@@ -29,4 +31,6 @@ async def main():
 
 
 if __name__ == "__main__":
+    if SENTRY_DSN:
+        sentry_sdk.init(SENTRY_DSN)
     asyncio.run(main())

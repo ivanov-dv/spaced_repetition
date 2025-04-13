@@ -45,3 +45,8 @@ POSTGRESQL_PORT = os.getenv("POSTGRESQL_PORT_TEST")
 POSTGRESQL_DB = "spaced_repetition_test"
 SQLALCHEMY_DATABASE_URL_TEST = (f"postgresql+asyncpg://{POSTGRESQL_USER}:{POSTGRESQL_PASSWORD}@{POSTGRESQL_HOST}:"
                                 f"{POSTGRESQL_PORT}/{POSTGRESQL_DB}")
+
+"""
+SENTRY
+"""
+SENTRY_DSN = os.getenv("SENTRY_DSN")
