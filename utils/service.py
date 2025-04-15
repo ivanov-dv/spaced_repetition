@@ -38,7 +38,7 @@ class Monitoring:
         if request.date_notice <= datetime.utcnow().date():
             if datetime.utcnow().hour >= 9:
                 await request.calculate_next_date_notice()
-                self._send_message(request)
+                await self._send_message(request)
 
     async def check(self):
         while True:
